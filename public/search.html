@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Records</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #380a0a;
+      background-image: url('bk.jpeg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-attachment: fixed;
+      color: white;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: -1;
+    }
+
+    .logo {
+      margin-top: 30px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid #e53935;
+      box-shadow: 0 0 15px #e53935, 0 0 25px rgba(255, 0, 0, 0.4);
+      object-fit: cover;
+      background-color: #000;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.08);
+    }
+
+    h1 {
+      color: #e53935;
+      font-size: 2rem;
+      margin: 15px 0 25px;
+      text-shadow: 0 0 12px #e53935;
+      animation: pulse 2s infinite;
+      text-align: center;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        text-shadow: 0 0 6px #e53935;
+      }
+      50% {
+        text-shadow: 0 0 14px #e53935;
+      }
+    }
+
+    select, input {
+      padding: 10px;
+      font-size: 14px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background-color: #222;
+      color: white;
+      width: 240px;
+      transition: 0.3s;
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      box-shadow: 0 0 6px #e53935;
+      border-color: #e53935;
+    }
+
+    .button {
+      background-color: #e53935;
+      color: white;
+      font-weight: bold;
+      padding: 10px 16px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 0 8px rgba(229, 57, 53, 0.3);
+      width: 250px;
+    }
+
+    .button:hover {
+      background-color: #ff4c4c;
+      transform: scale(1.04);
+    }
+
+    .middle-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .menu-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: #e53935;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 0 8px rgba(229, 57, 53, 0.4);
+    }
+
+    .menu-toggle:hover {
+      background-color: #ff4c4c;
+    }
+
+    .slide-menu {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 260px;
+      height: 100%;
+      background-color: #1c1c1c;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.4);
+      padding-top: 100px;
+      transition: left 0.3s ease;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .slide-menu.open {
+      left: 0;
+    }
+
+    .menu-button {
+      margin: 10px 0;
+      width: 90%;
+      font-size: 14px;
+    }
+
+    .footer-ticker {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.6);
+      border-top: 1px solid #e53935;
+      padding: 6px 0;
+      z-index: 999;
+    }
+
+    .footer-ticker p {
+      display: inline-block;
+      white-space: nowrap;
+      color: #ffaaaa;
+      font-style: italic;
+      font-size: 12px;
+      animation: scrollText 18s linear infinite;
+      padding-left: 100%;
+    }
+
+    @keyframes scrollText {
+      0% {
+        transform: translateX(0%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Menu Toggle Button -->
+  <button class="menu-toggle" onclick="toggleMenu()">☰ Menu</button>
+
+  <!-- Logo -->
+  <img src="css/logo.jpeg" alt="Logo" class="logo">
+
+  <!-- Heading -->
+  <h1>Search Records</h1>
+
+  <!-- Search Section -->
+  <div class="middle-section">
+    <select id="searchType" onchange="toggleInput()">
+      <option value="criminal">Criminal</option>
+      <option value="victim">Victim</option>
+    </select>
+
+    <div id="criminalInput">
+      <input type="number" id="criminalId" placeholder="Enter Criminal ID" />
+      <button class="button" onclick="searchCriminal()">Search Criminal</button>
+    </div>
+
+    <div id="victimInput" style="display:none;">
+      <input type="number" id="victimId" placeholder="Enter Victim ID" />
+      <button class="button" onclick="searchVictim()">Search Victim</button>
+    </div>
+  </div>
+
+  <!-- Slide Menu -->
+  <div class="slide-menu" id="sideMenu">
+    <button class="button menu-button" onclick="goToReport()">Generate Report</button>
+    <button class="button menu-button" onclick="window.location.href='/add-criminal.html'">Add New Criminal</button>
+    <button class="button menu-button" onclick="window.location.href='/delete-criminal.html'">Delete Criminal</button>
+    <button class="button menu-button" onclick="window.location.href='/access-logs.html'">Access Logs</button>
+    <button class="button menu-button" onclick="window.location.href='login.html'">Logout</button>
+  </div>
+
+  <!-- Footer Ticker -->
+  <div class="footer-ticker">
+    <p><em>“Cybersecurity is much more than a matter of IT.” — Stephane Nappo</em></p>
+  </div>
+
+  <!-- Script -->
+  <script>
+    function toggleInput() {
+      const type = document.getElementById('searchType').value;
+      document.getElementById('criminalInput').style.display = type === 'criminal' ? 'block' : 'none';
+      document.getElementById('victimInput').style.display = type === 'victim' ? 'block' : 'none';
+    }
+
+    function searchCriminal() {
+      const id = document.getElementById('criminalId').value;
+      if (!id) {
+        alert('Enter Criminal ID');
+        return;
+      }
+      window.location.href = `/criminal?id=${id}`;
+    }
+
+    function searchVictim() {
+      const id = document.getElementById('victimId').value;
+      if (!id) {
+        alert('Enter Victim ID');
+        return;
+      }
+      window.location.href = `/victim?id=${id}`;
+    }
+
+    function goToReport() {
+      const type = document.getElementById('searchType').value;
+      const id = type === 'criminal' ? document.getElementById('criminalId').value : document.getElementById('victimId').value;
+      if (!id) {
+        alert(`Enter ${type.charAt(0).toUpperCase() + type.slice(1)} ID`);
+        return;
+      }
+      window.location.href = `/report.html?id=${id}&type=${type}`;
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById('sideMenu');
+      menu.classList.toggle('open');
+    }
+  </script>
+
+</body>
+</html>

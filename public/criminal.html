@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Criminal Details</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 0 20px;
+      gap: 20px;
+      border-bottom: 1px solid #222;
+      box-shadow: 0 4px 10px rgba(255, 0, 0, 0.1);
+      animation: fadeIn 1s ease-out;
+    }
+
+    header img {
+      height: 80px;
+      width: 80px;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+      transition: transform 0.3s ease;
+    }
+
+    header img:hover {
+      transform: scale(1.05);
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      color: #ff3333;
+      text-shadow: 0 0 10px #ff1a1a;
+      margin: 0;
+      animation: glowTitle 1.5s ease-in-out infinite alternate;
+    }
+
+    .search-container {
+      margin-top: 100px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    input, button {
+      padding: 12px 16px;
+      font-size: 16px;
+      margin: 12px;
+      border-radius: 8px;
+      border: none;
+      box-shadow: 0 0 6px rgba(255, 0, 0, 0.2);
+      background-color: #111;
+      color: #eee;
+      transition: box-shadow 0.3s ease;
+    }
+
+    input {
+      width: 300px;
+      background-color: #1a1a1a;
+      border: 1px solid #333;
+    }
+
+    button {
+      background-color: #ff1a1a;
+      color: #fff;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    button:hover {
+      background-color: #ff3333;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes glowTitle {
+      from { text-shadow: 0 0 10px #ff1a1a; }
+      to { text-shadow: 0 0 20px #ff3333; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="css/logo.jpeg" alt="Logo">
+    <h1>Search Criminal Details</h1>
+  </header>
+
+  <div class="search-container">
+    <input type="number" id="criminalId" placeholder="Enter Criminal ID" />
+    <button onclick="searchCriminal()">Search</button>
+  </div>
+
+  <script>
+    function searchCriminal() {
+      const id = document.getElementById('criminalId').value;
+      if (!id) {
+        alert('Please enter a valid Criminal ID');
+        return;
+      }
+
+      window.location.href = `/criminal?id=${id}`;
+    }
+  </script>
+
+</body>
+</html>

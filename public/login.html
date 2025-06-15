@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <style>
+    @keyframes bgGlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(-45deg, #2a0000, #5c0000, #7f0000, #5c0000);
+      background-size: 400% 400%;
+      animation: bgGlow 20s ease infinite;
+      font-family: 'Segoe UI', sans-serif;
+      color: #ff4c4c;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    .heading {
+      font-size: 2rem;
+      color: #ff8080;
+      text-shadow: 0 0 20px #ff1a1a, 0 0 40px #ff0000;
+      animation: flickerText 3s infinite;
+      margin-bottom: 25px;
+      font-weight: 700;
+      user-select: none;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    @keyframes flickerText {
+      0%, 100% { opacity: 1; }
+      40% { opacity: 0.6; }
+      70% { opacity: 0.8; }
+    }
+
+    .login-box {
+      text-align: center;
+      background-color: #330000;
+      padding: 30px 25px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px #ff1a1a;
+      width: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1.5px solid #b30000;
+    }
+
+    .login-box:hover {
+      box-shadow: 0 0 40px #ff4c4c, 0 0 60px #ff1a1a;
+    }
+
+    .logo {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      border: 2px solid #ff1a1a;
+      object-fit: cover;
+      box-shadow: 0 0 18px #ff1a1a;
+    }
+
+    h2 {
+      margin-bottom: 18px;
+      color: #ff1a1a;
+      font-size: 1.3rem;
+      font-weight: 700;
+      animation: flicker 2.5s infinite;
+      text-transform: uppercase;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 1; }
+      5% { opacity: 0.7; }
+      15% { opacity: 0.4; }
+      20%, 100% { opacity: 1; }
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background: #4b0000;
+      border: 1px solid #ff1a1a;
+      border-radius: 6px;
+      color: #ff9999;
+      font-size: 14px;
+      outline: none;
+      transition: box-shadow 0.3s ease;
+    }
+
+    input:hover {
+      background-color: #660000;
+    }
+
+    input:focus {
+      box-shadow: 0 0 15px #ff4c4c;
+      background-color: #660000;
+      color: #fff;
+    }
+
+    button {
+      background-color: #ff1a1a;
+      color: #000;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.4s ease, box-shadow 0.4s ease;
+      box-shadow: 0 0 15px #ff1a1a;
+      text-transform: uppercase;
+    }
+
+    button:hover {
+      background-color: #b30000;
+      box-shadow: 0 0 35px #ff4c4c;
+    }
+
+    #error {
+      color: #ff4c4c;
+      margin-top: 10px;
+      min-height: 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="heading">Cyber's Criminal                       Record System</div>
+
+  <div class="login-box">
+    <img src="css/LOGO.jpeg" alt="Logo" class="logo" />
+    <h2>Login</h2>
+    <form action="/login" method="POST">
+      <input type="text" name="username" placeholder="Username" required />
+      <input type="password" name="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <p id="error"></p>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error');
+    if (error) {
+      document.getElementById('error').textContent = decodeURIComponent(error);
+    }
+  </script>
+</body>
+</html>

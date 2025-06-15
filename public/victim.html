@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Victim Details</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0 20px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      padding: 30px 0 20px;
+      gap: 20px;
+      border-bottom: 1px solid #222;
+      box-shadow: 0 4px 10px rgba(255, 0, 0, 0.1);
+      animation: fadeIn 1s ease-out;
+    }
+
+    header img {
+      height: 80px;
+      width: 80px;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+      transition: transform 0.3s ease;
+    }
+
+    header img:hover {
+      transform: scale(1.05);
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      color: #ff3333;
+      text-shadow: 0 0 10px #ff1a1a;
+      margin: 0;
+      animation: glowTitle 1.5s ease-in-out infinite alternate;
+    }
+
+    h2 {
+      margin-top: 40px;
+      font-size: 1.8rem;
+      color: #ff4d4d;
+      text-shadow: 0 0 8px #ff1a1a;
+      animation: fadeIn 1.2s ease-out;
+    }
+
+    .card {
+      background: #111;
+      padding: 24px;
+      border-radius: 12px;
+      margin-top: 25px;
+      box-shadow: 0 0 12px rgba(255, 0, 0, 0.15);
+      font-size: 1.1rem;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .case {
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid #333;
+      border-radius: 10px;
+      background-color: #1a1a1a;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+      animation: fadeInUp 1.2s ease-out;
+    }
+
+    .case:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 14px rgba(255, 0, 0, 0.25);
+    }
+
+    .case h3 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      color: #ff6666;
+      text-shadow: 0 0 6px #ff1a1a;
+    }
+
+    strong {
+      color: #fff;
+    }
+
+    p {
+      margin: 8px 0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes glowTitle {
+      from { text-shadow: 0 0 10px #ff1a1a; }
+      to { text-shadow: 0 0 20px #ff3333; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="css/logo.jpeg" alt="Logo">
+    <h1>Victim Details</h1>
+  </header>
+
+  <div class="card" id="victimInfo"></div>
+
+  <h2>Associated Cases</h2>
+  <div id="casesList"></div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const victimId = urlParams.get('id');
+
+    fetch(`/victim?id=${victimId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.length) {
+          document.getElementById("victimInfo").innerHTML = "<p>No victim found.</p>";
+          return;
+        }
+
+        const { victim_name, contact_info, victim_type } = data[0];
+        document.getElementById("victimInfo").innerHTML = `
+          <p><strong>Name:</strong> ${victim_name}</p>
+          <p><strong>Contact:</strong> ${contact_info}</p>
+          <p><strong>Type:</strong> ${victim_type}</p>
+        `;
+
+        const cases = data.filter(item => item.case_id !== null);
+        const casesList = cases.map(c => {
+          const formattedDate = c.date_reported 
+            ? new Date(c.date_reported).toISOString().split('T')[0]
+            : "N/A";
+          return `
+            <div class="case">
+              <h3>${c.case_title}</h3>
+              <p><strong>Description:</strong> ${c.case_description}</p>
+              <p><strong>Date Reported:</strong> ${formattedDate}</p>
+              <p><strong>Status:</strong> ${c.case_status}</p>
+            </div>
+          `;
+        }).join('');
+        document.getElementById("casesList").innerHTML = casesList || "<p>No cases associated.</p>";
+      })
+      .catch(err => {
+        console.error(err);
+        document.body.innerHTML = "<p>Error loading victim details.</p>";
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Criminal Details</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            margin: 0;
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #ff4d4d;
+            box-shadow: 0 0 8px rgba(255, 77, 77, 0.5);
+            object-fit: cover;
+        }
+
+        h1, h2, h3 {
+            color: #ff4d4d;
+            margin: 8px 0;
+        }
+
+        .card {
+            background-color: #2b2b2b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 0 6px rgba(255, 77, 77, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.01);
+        }
+
+        p {
+            font-size: 12px;
+            line-height: 1.4;
+            color: #ccc;
+            margin: 4px 0;
+        }
+
+        strong {
+            color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 16px;
+        }
+
+        h3 {
+            font-size: 14px;
+        }
+
+        .back-button {
+            display: block;
+            margin: 0 auto 30px auto;
+            background-color: #ff4d4d;
+            color: white;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 0 6px rgba(255, 77, 77, 0.4);
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .back-button:hover {
+            background-color: #ff6666;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <img src="/css/logo.jpeg" alt="Logo" class="logo">
+    <h1>Details for Criminal ID: <%= criminalId %></h1>
+    <a href="/search.html" class="back-button">← Back to Search</a>
+
+    <% if (data.length === 0) { %>
+        <p>No criminal data found.</p>
+    <% } else { %>
+        <div class="card">
+            <h2><%= data[0].criminal_name %></h2>
+            <p><strong>Date of Birth:</strong> <%= data[0].date_of_birth.toISOString().split('T')[0] %></p>
+            <p><strong>Nationality:</strong> <%= data[0].nationality %></p>
+            <p><strong>Address:</strong> <%= data[0].known_address_street %>, <%= data[0].known_address_city %>, <%= data[0].known_address_postal_code %></p>
+            <% if (data[0].aliase_name) { %>
+                <p><strong>Alias:</strong> <%= data[0].aliase_name %></p>
+            <% } %>
+        </div>
+
+        <% const caseData = data.filter(d => d.case_id !== null);
+           if (caseData.length > 0) { %>
+            <h2>Associated Cases</h2>
+            <% caseData.forEach(item => { %>
+                <div class="card">
+                    <h3>Case: <%= item.case_title %></h3>
+                    <p><strong>Date Reported:</strong> <%= item.date_reported ? new Date(item.date_reported).toISOString().split('T')[0] : 'N/A' %></p>
+                    <p><strong>Status:</strong> <%= item.case_status %></p>
+                    <p><strong>Description:</strong> <%= item.case_description %></p>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>This criminal is not currently associated with any cases.</p>
+        <% } %>
+    <% } %>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Case Report</title>
+  <style>
+    body {
+      background: #111; color: white;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      padding: 10px 20px;
+      font-size: 13px;
+    }
+
+    .logo {
+      position: absolute;
+      top: 10px; left: 10px;
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      border: 2px solid #e53935;
+      box-shadow: 0 0 10px #e53935;
+      object-fit: cover;
+      background: #000;
+    }
+
+    h1 {
+      color: #e53935;
+      font-size: 20px;
+      margin-left: 80px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 5px #e53935;
+    }
+
+    h2 {
+      color: #e53935;
+      font-size: 16px;
+      border-bottom: 1px solid #444;
+      margin-top: 20px;
+      margin-bottom: 5px;
+    }
+
+    .section {
+      margin-bottom: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 5px;
+    }
+
+    th, td {
+      border: 1px solid #444;
+      padding: 4px 6px;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    th {
+      background: #222;
+      color: #fff;
+    }
+
+    input {
+      padding: 5px;
+      font-size: 12px;
+      background: #222;
+      color: #eee;
+      border: 1px solid #444;
+      border-radius: 3px;
+      width: 150px;
+      margin-bottom: 10px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #e53935;
+      box-shadow: 0 0 5px #e53935;
+    }
+
+    button {
+      padding: 6px 10px;
+      font-size: 12px;
+      background: #e53935;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    button:hover {
+      background: #ff4c4c;
+    }
+
+    #loading {
+      display: none;
+      color: #e53935;
+      font-weight: bold;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="css/logo.jpeg" alt="Logo" class="logo">
+  <h1>Generate Case Report</h1>
+
+  <input type="number" id="caseIdInput" placeholder="Case ID">
+  <button onclick="generateReport()">Generate</button>
+
+  <div id="loading">Loading...</div>
+  <div id="reportContainer"></div>
+  <button id="printBtn" style="display: none;" onclick="printReport()">Print</button>
+
+  <script>
+    async function generateReport() {
+      const caseId = document.getElementById('caseIdInput').value;
+      const loading = document.getElementById("loading");
+      const container = document.getElementById("reportContainer");
+      const printBtn = document.getElementById("printBtn");
+
+      if (!caseId) return alert("Enter Case ID.");
+
+      loading.style.display = 'block';
+      container.innerHTML = '';
+      printBtn.style.display = 'none';
+
+      try {
+        const res = await fetch(`/report-data?id=${caseId}`);
+        const data = await res.json();
+        loading.style.display = 'none';
+
+        if (data.error) {
+          container.innerHTML = `<p style="color: red;">${data.error}</p>`;
+          return;
+        }
+
+        printBtn.style.display = 'inline-block';
+
+        container.innerHTML = `
+          <div class="section">
+            <h2>Case Info</h2>
+            <p><b>Title:</b> ${data.case.title}</p>
+            <p><b>Date:</b> ${new Date(data.case.date).toLocaleDateString()}</p>
+            <p><b>Status:</b> ${data.case.status}</p>
+          </div>
+
+          <div class="section">
+            <h2>Criminals</h2>
+            ${data.criminals.length === 0 ? '<p>No data.</p>' : `
+              <table><tr><th>Name</th><th>Gender</th><th>Age</th></tr>
+              ${data.criminals.map(c => `<tr><td>${c.name}</td><td>${c.gender}</td><td>${c.age}</td></tr>`).join('')}</table>`}
+          </div>
+
+          <div class="section">
+            <h2>Aliases</h2>
+            ${data.aliases.length === 0 ? '<p>No aliases.</p>' : `
+              <ul>${data.aliases.map(a => `<li>${a.alias_name}</li>`).join('')}</ul>`}
+          </div>
+
+          <div class="section">
+            <h2>Victims</h2>
+            ${data.victim.length === 0 ? '<p>No victims.</p>' : `
+              <table><tr><th>Name</th><th>Contact</th><th>Type</th></tr>
+              ${data.victim.map(v => `<tr><td>${v.name}</td><td>${v.contact_info}</td><td>${v.type}</td></tr>`).join('')}</table>`}
+          </div>
+
+          <div class="section">
+            <h2>Reports</h2>
+            ${data.reports.length === 0 ? '<p>No reports.</p>' : `
+              <table><tr><th>Content</th><th>Date</th><th>Status</th></tr>
+              ${data.reports.map(r => `<tr><td>${r.report_content}</td><td>${new Date(r.date_created).toLocaleDateString()}</td><td>${r.status}</td></tr>`).join('')}</table>`}
+          </div>
+
+          <div class="section">
+            <h2>Charges</h2>
+            ${data.charges.length === 0 ? '<p>No charges.</p>' : `
+              <table><tr><th>Content</th><th>Date</th></tr>
+              ${data.charges.map(c => `<tr><td>${c.report_content}</td><td>${new Date(c.date_created).toLocaleDateString()}</td></tr>`).join('')}</table>`}
+          </div>
+
+          <div class="section">
+            <h2>Offenses</h2>
+            ${data.offenses.length === 0 ? '<p>No offenses.</p>' : `
+              <table><tr><th>Name</th><th>Description</th><th>Law Section</th></tr>
+              ${data.offenses.map(o => `<tr><td>${o.name}</td><td>${o.description}</td><td>${o.cyber_law_section}</td></tr>`).join('')}</table>`}
+          </div>
+        `;
+
+      } catch (err) {
+        loading.style.display = 'none';
+        container.innerHTML = `<p style="color:red;">Error loading report.</p>`;
+      }
+    }
+
+    function printReport() {
+      window.print();
+    }
+  </script>
+</body>
+</html>
