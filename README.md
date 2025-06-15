@@ -5,7 +5,7 @@
 
 This project is a **functional web-based Criminal Record Management System**, developed as part of an academic assignment. While this version is being shared to highlight the structure and interface only, the system itself includes a working backend and interactive features.
 
-It is built using **Node.js**, **Express.js**, **EJS**, and **SQL Server**, following proper modularity and MVC-style separation.
+It is built using **Node.js**, **Express.js**, **EJS**, and **SQL Server**.
 
 ---
 
